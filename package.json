@@ -6,6 +6,9 @@
     "body-parser": "^1.19.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "fast-safe-stringify": "^2.1.1",
+    "http-status": "^1.6.2",
+    "module-alias": "^2.2.2",
     "sequelize": "^6.3.4",
     "sqlite3": "^4.0.1"
   },
@@ -15,23 +18,37 @@
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q ./dist/index.js\"",
     "seed": "node ./scripts/seedDb.js",
     "prepare": "npx husky install",
-    "lint": "npx eslint ./src --ext .ts --fix"
+    "lint": "npx eslint ./src --ext .ts --fix",
+    "test": "npx jest"
   },
   "devDependencies": {
     "@types/express": "^4.17.16",
+    "@types/jest": "^29.4.0",
     "@types/node": "^18.11.18",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
     "concurrently": "^7.6.0",
     "eslint": "^8.32.0",
     "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-jest": "^27.2.1",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.3",
+    "jest": "^29.4.0",
     "nodemon": "^2.0.20",
     "prettier": "^2.8.3",
+    "ts-jest": "^29.0.5",
     "typescript": "^4.9.4"
   },
   "engines": {
     "node": ">=10.16.3"
   },
-  "engineStrict": true
+  "engineStrict": true,
+  "_moduleAliases": {
+    "@app": "./dist",
+    "@controllers": "./dist/controllers",
+    "@services": "./dist/services",
+    "@middlewares": "./dist/middlewares",
+    "@utils": "./dist/utils",
+    "@errors": "./dist/utils/errors",
+    "@routers": "./dist/routers"
+  }
 }
