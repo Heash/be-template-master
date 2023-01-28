@@ -11,3 +11,7 @@ export const contractsRouter: Router = express.Router()
 contractsRouter.get('/:id', getProfile, async (req, res, next) =>
   contractsController.getContract(req, res, next),
 )
+
+contractsRouter.get('/', getProfile, async (req, res, next) =>
+  contractsController.getContracts(req, res, next),
+)

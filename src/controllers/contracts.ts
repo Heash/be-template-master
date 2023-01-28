@@ -6,17 +6,28 @@ export class ContractsController {
     private readonly contractsService: ContractsService = contractsService,
   ) {}
 
-  /**
-   * FIX ME!
-   * @returns contract by id
-   */
   public async getContract(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params
+      const id = Number(req.params.id)
+      const profileId = Number(req.get('profile_id'))
 
-      const contract = await this.contractsService.getContract(Number(id))
+      const contract = await this.contractsService.getContract(id, profileId)
 
       res.json(contract)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  public async getContracts(req: Request, res: Response, next: NextFunction) {
+    try {
+      const profileId = req.get('profile_id')
+
+      const contracts = await this.contractsService.getContracts(
+        Number(profileId),
+      )
+
+      res.json(contracts)
     } catch (error) {
       next(error)
     }

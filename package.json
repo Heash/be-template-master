@@ -10,12 +10,13 @@
     "http-status": "^1.6.2",
     "module-alias": "^2.2.2",
     "sequelize": "^6.3.4",
+    "sequelize-typescript": "^2.1.5",
     "sqlite3": "^4.0.1"
   },
   "scripts": {
     "build": "npx tsc",
     "start": "npx nodemon ./dist/server.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q ./dist/index.js\"",
+    "dev": "concurrently \"npx tsc --watch\" \"npx nodemon -q ./dist/index.js\"",
     "seed": "node ./scripts/seedDb.js",
     "prepare": "npx husky install",
     "lint": "npx eslint ./src --ext .ts --fix",

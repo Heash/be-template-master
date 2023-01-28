@@ -1,4 +1,6 @@
-const { Profile, Contract, Job } = require('../dist/model')
+const { sequelize } = require('../dist/models/index')
+
+const { Profile, Contract, Job } = sequelize.models
 
 /* WARNING THIS WILL DROP THE CURRENT DATABASE */
 seed()
