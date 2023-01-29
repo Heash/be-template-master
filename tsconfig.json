@@ -26,7 +26,7 @@
       ],
       "@routers/*": [
         "./src/routers/*"
-      ],
+      ]
     },
     "declaration": true,
     "declarationMap": true,
@@ -40,6 +40,6 @@
   },
   "include": [
     "./src/**/*",
-    ".eslintrc.js",
-  ],
+    ".eslintrc.js"
+  ]
 }

@@ -1,6 +1,6 @@
 import express, { Router } from 'express'
 import { AdminController } from '@app/controllers/admin'
-import { AdminService } from '@app/services/adminService'
+import { AdminService } from '@app/services/admin'
 
 const adminService = new AdminService()
 const adminController = new AdminController(adminService)

@@ -1,4 +1,4 @@
-import { AdminService } from '@app/services/adminService'
+import { AdminService } from '@app/services/admin'
 import { NextFunction, Request, Response } from 'express'
 
 export class AdminController {
@@ -9,8 +9,8 @@ export class AdminController {
     next: NextFunction,
   ) {
     try {
-      const startDate = new Date(req.query.startDate as string)
-      const endDate = new Date(req.query.endDate as string)
+      const startDate = new Date(req.query.start as string)
+      const endDate = new Date(req.query.end as string)
 
       const topProfession = await this.adminService.getTopProfession(
         startDate,
@@ -25,8 +25,8 @@ export class AdminController {
 
   public async getTopClients(req: Request, res: Response, next: NextFunction) {
     try {
-      const startDate = new Date(req.query.startDate as string)
-      const endDate = new Date(req.query.endDate as string)
+      const startDate = new Date(req.query.start as string)
+      const endDate = new Date(req.query.end as string)
       const limit = Number(req.query.limit) || 2
 
       const topClients = await this.adminService.getTopClients(

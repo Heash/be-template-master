@@ -6,6 +6,6 @@ import { Job } from './job'
 // Define database
 export const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: './database.sqlite3',
+  storage: process.env.DB_STORAGE || 'db.sqlite',
   models: [Contract, Profile, Job],
 })

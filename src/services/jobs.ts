@@ -16,7 +16,9 @@ export class JobsService {
           model: Contract,
           where: {
             [Op.or]: [{ ContractorId: profileId }, { ClientId: profileId }],
+            status: 'in_progress',
           },
+          attributes: [],
         },
       ],
     })
@@ -25,7 +27,7 @@ export class JobsService {
   }
 
   // Pay for a job, a client can only pay if his balance >= the amount to pay. The amount should be moved from the client's balance to the contractor balance.
-  public async payForJob(jobId: number, profileId: number): Promise<void> {
+  public async payForJob(profileId: number, jobId: number): Promise<void> {
     // Start a transaction
     const transaction = await sequelize.transaction()
 
@@ -38,18 +40,15 @@ export class JobsService {
           id: jobId,
           paid: false,
         },
+        include: [
+          {
+            model: Contract,
+            attributes: ['id'],
+          },
+        ],
       })
       if (!job) throw new NotFoundError('Job not found')
-      const { price, ContractId } = job
-
-      // Find contract
-      const contract = await Contract.findOne({
-        where: {
-          id: ContractId,
-          ClientId: profileId,
-        },
-      })
-      if (!contract) throw new NotFoundError('Contract not found')
+      const { price } = job
 
       const client = await Profile.findOne({
         lock: transaction.LOCK.UPDATE,
@@ -64,7 +63,7 @@ export class JobsService {
       if (client.balance < price) throw new Error('Not enough balance')
 
       // Pay for job
-      await contract.decrement('balance', { by: price, transaction })
+      await client.decrement('balance', { by: price, transaction })
       await job.update({ paid: true, paymentDate: new Date() }, { transaction })
 
       // Commit the transaction

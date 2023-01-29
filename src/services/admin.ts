@@ -22,22 +22,22 @@ export class AdminService {
           [Op.between]: [startDate, endDate],
         },
       },
-      attributes: ['ContractorId', [fn('sum', col('price')), 'total']],
-      group: ['ContractorId'],
+      include: [
+        {
+          model: Contract,
+          attributes: ['ContractorId'],
+        },
+      ],
+      attributes: ['ContractId', [fn('sum', col('price')), 'total']],
+      group: ['contract.ContractorId'],
       order: [[fn('sum', col('price')), 'DESC']],
       limit: 1,
     })
 
-    const { ContractId } = topJob[0]
-
-    // Get contract
-    const contract = await Contract.findByPk(ContractId, {
-      attributes: ['ContractorId'],
-    })
-    if (!contract) throw new Error('Contract not found')
+    const contractorId = topJob[0]?.contract?.ContractorId
 
     // Get contractor
-    const contractor = await Profile.findByPk(contract.ContractorId, {
+    const contractor = await Profile.findByPk(contractorId, {
       attributes: ['profession'],
     })
 
@@ -50,33 +50,28 @@ export class AdminService {
     startDate: Date,
     endDate: Date,
     limit: number,
-  ): Promise<TopClient[]> {
-    // Get top jobs
-    const topJobs: any[] = await Job.findAll({
+  ): Promise<TopClient[] | undefined> {
+    // Get top clients based on jobs total paid
+    const topClientsRes = await Job.findAll({
       where: {
         paymentDate: {
           [Op.between]: [startDate, endDate],
         },
       },
-      attributes: ['ClientId', [fn('sum', col('price')), 'total']],
-      group: ['ClientId'],
+      include: [
+        {
+          model: Contract,
+          attributes: ['ClientId'],
+        },
+      ],
+      attributes: ['ContractId', [fn('sum', col('price')), 'total']],
+      group: ['contract.ClientId'],
       order: [[fn('sum', col('price')), 'DESC']],
-      raw: true,
       limit,
     })
 
-    // Get contracts
-    const contractIds = topJobs.map((job) => job.ContractId)
-    const contracts = await Contract.findAll({
-      where: {
-        id: {
-          [Op.in]: contractIds,
-        },
-      },
-    })
-
-    // Get clients
-    const clientIds = contracts.map((contract) => contract.ClientId)
+    // // Get clients
+    const clientIds = topClientsRes.map((item) => item?.contract?.ClientId)
     const clients = await Profile.findAll({
       where: {
         id: {
@@ -86,19 +81,19 @@ export class AdminService {
     })
 
     // Map top clients
-    const topClients: TopClient[] = topJobs.map((job) => {
-      const contract = contracts.find(
-        (contract) => contract.id === job.ContractId,
+    const topClientsResult: TopClient[] = topClientsRes.map((item) => {
+      const client = clients.find(
+        (client) => client.id === item?.contract?.ClientId,
       )
-      const client = clients.find((client) => client.id === contract?.ClientId)
+
       return {
-        id: client?.id || 0,
+        id: item?.contract?.ClientId as number,
         fullName: `${client?.firstName} ${client?.lastName}`,
-        paid: job.total,
+        paid: item.dataValues.total,
       }
     })
 
     // Return top clients
-    return topClients
+    return topClientsResult
   }
 }
