@@ -20,8 +20,8 @@
     "seed": "node ./scripts/seedDb.js",
     "prepare": "npx husky install",
     "lint": "npx eslint ./src --ext .ts --fix",
-    "test": "DOTENV_CONFIG_PATH=.env.test npx jest --setupFiles=dotenv/config",
-    "test:watch": "DOTENV_CONFIG_PATH=.env.test npx jest --setupFiles=dotenv/config --watch"
+    "test": "DOTENV_CONFIG_PATH=.env.test npx jest -i --setupFiles=dotenv/config",
+    "test:watch": "DOTENV_CONFIG_PATH=.env.test npx jest -i --setupFiles=dotenv/config --watch"
   },
   "devDependencies": {
     "@types/express": "^4.17.16",
